@@ -124,8 +124,6 @@ A rota mínima permanece:
 
 A falha não altera a rota escolhida porque o caminho mínimo entre S0 e S6 não utiliza o ramal S2–S4.
 
-
-
 ## 6. Árvore Geradora Mínima — Prim
 
 O algoritmo de Prim seleciona arestas de menor peso para conectar todos os vértices, sem formar ciclos.
@@ -179,16 +177,122 @@ A saída apresenta a matriz de adjacência, as distâncias e os antecessores de 
 
 ### Planejamento
 
-A primeira etapa foi usar de parâmetro o material de estudo disponibilizado pelo professor. A implementação foi organizada em dois arquivos Python, separando a criação do grafo da lógica dos algoritmos.
+A primeira etapa foi analisar o enunciado. O grafo foi representado com NetworkX, enquanto Dijkstra e Prim foram implementados manualmente em `algoritmos.py`, separados da instanciação da rede em `main.py`. Os pesos foram calculados pelas fórmulas do RA 510197 e conferidos antes de serem inseridos no código.
 
-Também foi definido que os resultados computacionais seriam comparados com o teste de mesa de Dijkstra.
+### Decisões de implementação
 
-### Implementação e validação
+- **Desempate:** o Dijkstra fecha o vértice aberto de menor L[v] e, em caso de empate, o de menor índice.
+- **Atualização:** distância e antecessor só mudam quando o novo custo é estritamente menor.
+- **Parada:** o algoritmo termina ao fechar o destino (S6), como no teste de mesa.
+- **Contingência:** a falha de e5 é simulada em uma cópia do grafo, sem alterar o original.
+- **Validação:** pesos negativos são rejeitados na criação das arestas.
 
-O grafo foi construído com NetworkX, utilizando os oito vértices e as treze arestas definidas pelo RA.
+### Dificuldades
 
-Durante a implementação de Dijkstra, foi necessário considerar a regra de desempate pelo menor índice e manter a atualização dos antecessores apenas quando uma distância menor fosse encontrada.
+O ponto mais delicado foi o empate em S4. Na iteração 4, o caminho por S3 (24 + 8) também resulta em 32 km, igual ao valor já obtido por S2. Foi necessário usar a comparação estrita (`<`) para que Ant[S4] permanecesse S2, como no teste de mesa. Outro ponto foi a ordem de fechamento: S5 (31 km) é fechado antes de S4 (32 km), apesar de ter índice maior, pois o critério principal é a menor distância e o índice só desempata.
 
-Após a implementação, o programa foi executado e os resultados foram conferidos com o teste de mesa. Os custos e a ordem de fechamento coincidiram com os resultados esperados.
+### Validação (código × teste de mesa)
 
-Também foi adicionada uma validação para impedir a inserção de arestas com pesos negativos.
+A saída do programa foi comparada com a tabela da seção 4. As distâncias L[v] de cada iteração, os antecessores e a ordem de fechamento (S0, S1, S2, S3, S5, S4, S6) são idênticos. O custo mínimo de 39 km e a rota S0 → S1 → S3 → S6 também coincidem.
+
+### Evidências de execução
+
+Saída real de `python main.py`:
+
+```text
+MATRIZ DE ADJACÊNCIA
+     S0  S1  S2  S3  S4  S5  S6  S7
+  S0     —    12    17     —     —     —     —     —
+  S1    12     —     9    12    23     —     —     —
+  S2    17     9     —     —    15    14     —     —
+  S3     —    12     —     —     8     —    15     —
+  S4     —    23    15     8     —     7     —    17
+  S5     —     —    14     —     7     —     —    24
+  S6     —     —     —    15     —     —     —    13
+  S7     —     —     —     —    17    24    13     —
+
+DIJKSTRA
+
+Tabela de execução:
+
+Iteração 1 - vértice fechado: S0
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: ∞ | S4: ∞ | S5: ∞ | S6: ∞ | S7: ∞ | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: None | S4: None | S5: None | S6: None | S7: None | 
+
+Iteração 2 - vértice fechado: S1
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 35 | S5: ∞ | S6: ∞ | S7: ∞ | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S1 | S5: None | S6: None | S7: None | 
+
+Iteração 3 - vértice fechado: S2
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 32 | S5: 31 | S6: ∞ | S7: ∞ | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S2 | S5: S2 | S6: None | S7: None | 
+
+Iteração 4 - vértice fechado: S3
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 32 | S5: 31 | S6: 39 | S7: ∞ | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S2 | S5: S2 | S6: S3 | S7: None | 
+
+Iteração 5 - vértice fechado: S5
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 32 | S5: 31 | S6: 39 | S7: 55 | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S2 | S5: S2 | S6: S3 | S7: S5 | 
+
+Iteração 6 - vértice fechado: S4
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 32 | S5: 31 | S6: 39 | S7: 49 | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S2 | S5: S2 | S6: S3 | S7: S4 | 
+
+Iteração 7 - vértice fechado: S6
+Distâncias:
+S0: 0 | S1: 12 | S2: 17 | S3: 24 | S4: 32 | S5: 31 | S6: 39 | S7: 49 | 
+Antecessores:
+S0: None | S1: S0 | S2: S0 | S3: S1 | S4: S2 | S5: S2 | S6: S3 | S7: S4 | 
+
+Ordem de fechamento:
+S0 -> S1 -> S2 -> S3 -> S5 -> S4 -> S6
+
+Antecessores finais:
+S0: None
+S1: S0
+S2: S0
+S3: S1
+S4: S2
+S5: S2
+S6: S3
+S7: S4
+
+Menor caminho:
+S0 -> S1 -> S3 -> S6
+Custo mínimo: 39 km
+
+Soma das distâncias mínimas a partir de S0: 204 km
+
+CONTINGÊNCIA - FALHA DO RAMAL e5
+Novo caminho: S0 -> S1 -> S3 -> S6
+Novo custo: 39 km
+Aumento: 0 km
+Aumento percentual: 0.00%
+
+ÁRVORE GERADORA MÍNIMA - PRIM
+S0 - S1: 12 km
+S1 - S2: 9 km
+S1 - S3: 12 km
+S3 - S4: 8 km
+S4 - S5: 7 km
+S3 - S6: 15 km
+S6 - S7: 13 km
+Custo total da AGM: 76 km
+
+COMPARAÇÃO
+Soma das distâncias de Dijkstra: 204 km
+Custo da árvore geradora mínima: 76 km
+```
