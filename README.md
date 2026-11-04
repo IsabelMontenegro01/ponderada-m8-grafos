@@ -126,26 +126,30 @@ A falha não altera a rota escolhida porque o caminho mínimo entre S0 e S6 não
 
 ## 6. Árvore Geradora Mínima — Prim
 
-O algoritmo de Prim seleciona arestas de menor peso para conectar todos os vértices, sem formar ciclos.
+O algoritmo de Prim parte de um vértice (aqui, S0) e, a cada passo, acrescenta a menor aresta que liga a árvore já formada a um vértice ainda não incluído, até conectar todos.
 
-A árvore geradora mínima encontrada é composta pelas seguintes arestas:
+| Passo | Aresta | Peso |
+|---|---|---:|
+| 1 | S0 – S1 | 12 km |
+| 2 | S1 – S2 | 9 km |
+| 3 | S1 – S3 | 12 km |
+| 4 | S3 – S4 | 8 km |
+| 5 | S4 – S5 | 7 km |
+| 6 | S3 – S6 | 15 km |
+| 7 | S6 – S7 | 13 km |
+| | **Total** | **76 km** |
 
-| Aresta | Peso |
-|---|---:|
-| S4 – S5 | 7 km |
-| S3 – S4 | 8 km |
-| S1 – S2 | 9 km |
-| S0 – S1 | 12 km |
-| S1 – S3 | 12 km |
-| S6 – S7 | 13 km |
-| S3 – S6 | 15 km |
-| **Total** | **76 km** |
+A AGM conecta as oito subestações com sete arestas, e seu custo total é de **76 km**.
 
-A AGM conecta as oito subestações com sete arestas, utilizando o menor custo total possível.
+### Comparação com Dijkstra
 
-O custo da AGM não deve ser confundido com a soma das menores distâncias calculadas pelo Dijkstra. O Dijkstra considera caminhos mínimos a partir de uma origem específica. Já o Prim busca conectar todos os vértices com o menor custo total, sem exigir que cada caminho individual parta de S0.
+A soma das distâncias mínimas de Dijkstra a partir de S0 é **204 km**. Esse valor não é custo de infraestrutura, pois conta o mesmo ramal várias vezes: o ramal S0–S1, por exemplo, é percorrido por todas as rotas que passam por S1. A comparação adequada é com o comprimento total da árvore formada pelos antecessores de Dijkstra (S0–S1, S0–S2, S1–S3, S2–S4, S2–S5, S3–S6 e S4–S7), que soma **102 km**, contra os **76 km** da AGM.
 
-Neste caso, a soma das distâncias mínimas a partir de S0 é **204 km**, enquanto o custo da AGM é **76 km**. A união dos caminhos mínimos a partir de S0 não garante uma árvore de custo mínimo, pois esses caminhos são escolhidos individualmente para alcançar cada destino, e não para minimizar o custo total da rede.
+As duas árvores diferem porque otimizam objetivos distintos. O Dijkstra minimiza a distância de cada subestação até S0, e por isso inclui ramais como S0–S2 (17 km) e S4–S7 (17 km), que encurtam rotas individuais, mas encarecem a rede. O Prim minimiza o custo total de cabo e não se preocupa com a distância até S0. Por isso a união das rotas radiais não gera a AGM.
+
+### Impacto prático
+
+O menor custo de implantação não garante o melhor desempenho. Se o tráfego seguisse apenas pela AGM, S5 seria alcançado por S0 → S1 → S3 → S4 → S5, com 39 km, contra 31 km pela rota de Dijkstra (S0 → S1 → S2 → S5). São 8 km a mais, cerca de 26%. Do ponto de vista econômico, a AGM reduz a quantidade de linha instalada. Do ponto de vista físico, rotas mais longas aumentam as perdas e o tempo de recomposição em uma emergência. Redes reais costumam combinar uma estrutura de custo mínimo com ramais adicionais para reduzir distâncias e dar redundância.
 
 ## 7. Implementação
 
