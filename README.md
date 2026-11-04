@@ -157,7 +157,7 @@ O projeto está dividido em três arquivos:
 - `algoritmos.py`: implementação dos algoritmos de Dijkstra e Prim.
 - `README.md`: documentação da atividade e registro do desenvolvimento.
 
-O NetworkX é utilizado para representar o grafo. Os algoritmos de Dijkstra e Prim foram implementados separadamente, seguindo a abordagem didática apresentada no material do professor.
+O NetworkX é utilizado para representar o grafo. Os algoritmos de Dijkstra e Prim foram implementados separadamente.
 
 ### Execução
 
@@ -179,7 +179,7 @@ A saída apresenta a matriz de adjacência, as distâncias e os antecessores de 
 
 ### Planejamento
 
-A primeira etapa foi analisar o enunciado e o material disponibilizado pelo professor. A implementação foi organizada em dois arquivos Python, separando a criação do grafo da lógica dos algoritmos.
+A primeira etapa foi usar de parâmetro o material de estudo disponibilizado pelo professor. A implementação foi organizada em dois arquivos Python, separando a criação do grafo da lógica dos algoritmos.
 
 Também foi definido que os resultados computacionais seriam comparados com o teste de mesa de Dijkstra.
 
