@@ -1,136 +1,135 @@
-
 import networkx as nx
 
 from algoritmos import dijkstra, prim
 
 
-def criar_grafo():
-    grafo = nx.Graph()
+# Criação do grafo da atividade.
+grafo = nx.Graph()
 
-    # Oito subestações.
-    grafo.add_nodes_from([f"S{i}" for i in range(8)])
+grafo.add_nodes_from(["S0", "S1", "S2", "S3",
+                      "S4", "S5", "S6", "S7"])
 
-    # Treze ramais e seus respectivos pesos.
-    arestas = [
-        ("S0", "S1", 12),
-        ("S0", "S2", 17),
-        ("S1", "S2", 9),
-        ("S1", "S3", 12),
-        ("S2", "S4", 15),
-        ("S2", "S5", 14),
-        ("S3", "S4", 8),
-        ("S3", "S6", 15),
-        ("S4", "S5", 7),
-        ("S4", "S7", 17),
-        ("S5", "S7", 24),
-        ("S6", "S7", 13),
-        ("S1", "S4", 23)
-    ]
+arestas = [
+    ("S0", "S1", 12),
+    ("S0", "S2", 17),
+    ("S1", "S2", 9),
+    ("S1", "S3", 12),
+    ("S2", "S4", 15),
+    ("S2", "S5", 14),
+    ("S3", "S4", 8),
+    ("S3", "S6", 15),
+    ("S4", "S5", 7),
+    ("S4", "S7", 17),
+    ("S5", "S7", 24),
+    ("S6", "S7", 13),
+    ("S1", "S4", 23)
+]
 
-    for u, v, peso in arestas:
-        if peso < 0:
-            raise ValueError("O peso de uma aresta não pode ser negativo.")
-
-        grafo.add_edge(u, v, peso=peso)
-
-    return grafo
+for u, v, peso in arestas:
+    grafo.add_edge(u, v, peso=peso)
 
 
-def exibir_matriz(grafo):
-    vertices = list(grafo.nodes())
+# Exibição da matriz de adjacência.
+print("MATRIZ DE ADJACÊNCIA")
 
-    print("\nMATRIZ DE ADJACÊNCIA")
-    print("     " + "  ".join(vertices))
+vertices = list(grafo.nodes())
 
-    for u in vertices:
-        linha = [u]
+print("     " + "  ".join(vertices))
 
-        for v in vertices:
-            if grafo.has_edge(u, v):
-                valor = grafo[u][v]["peso"]
-                linha.append(str(valor))
-            else:
-                linha.append("—")
+for u in vertices:
+    linha = [u]
 
-        print("  ".join(f"{valor:>4}" for valor in linha))
-
-
-def executar_dijkstra(grafo):
-    origem = "S0"
-    destino = "S6"
-
-    distancias, antecessores, fechados, caminho = dijkstra(
-        grafo, origem, destino
-    )
-
-    print("\nDIJKSTRA")
-    print(f"Origem: {origem}")
-    print(f"Destino: {destino}")
-
-    print("\nDistâncias finais:")
-    for vertice, distancia in distancias.items():
-        if distancia == float("inf"):
-            print(f"{vertice}: Infinito")
+    for v in vertices:
+        if grafo.has_edge(u, v):
+            linha.append(str(grafo[u][v]["peso"]))
         else:
-            print(f"{vertice}: {distancia} km")
+            linha.append("—")
+
+    print("  ".join(f"{valor:>4}" for valor in linha))
+
+
+# Dijkstra: caminho de S0 até S6.
+print("\nDIJKSTRA")
+
+origem = "S0"
+destino = "S6"
+
+distancias, antecessores, fechados, caminho, historico = dijkstra(
+    grafo, origem, destino
+)
+
+# Exibição das iterações.
+print("\nTabela de execução:")
+
+for i, etapa in enumerate(historico, start=1):
+    print(f"\nIteração {i} - vértice fechado: {etapa['vertice']}")
+
+    print("Distâncias:")
+    for v in vertices:
+        distancia = etapa["distancias"][v]
+
+        if distancia == float("inf"):
+            print(f"{v}: ∞", end=" | ")
+        else:
+            print(f"{v}: {distancia}", end=" | ")
 
     print("\nAntecessores:")
-    for vertice, antecessor in antecessores.items():
-        print(f"{vertice}: {antecessor}")
+    for v in vertices:
+        print(f"{v}: {etapa['antecessores'][v]}", end=" | ")
 
-    print("\nOrdem de fechamento:")
-    print(" -> ".join(fechados))
-
-    print("\nMenor caminho:")
-    print(" -> ".join(caminho))
-
-    print(f"Custo total: {distancias[destino]} km")
-
-    return distancias, caminho
+    print()
 
 
-def executar_contingencia(grafo, custo_original):
-    print("\nCONTINGÊNCIA: FALHA DO RAMAL e5 (S2-S4)")
+print("\nOrdem de fechamento:")
+print(" -> ".join(fechados))
 
-    grafo_contingencia = grafo.copy()
-    grafo_contingencia.remove_edge("S2", "S4")
+print("\nAntecessores finais:")
+for v in vertices:
+    print(f"{v}: {antecessores[v]}")
 
-    distancias, antecessores, fechados, caminho = dijkstra(
-        grafo_contingencia, "S0", "S6"
-    )
+print("\nMenor caminho:")
+print(" -> ".join(caminho))
 
-    novo_custo = distancias["S6"]
-    aumento = novo_custo - custo_original
-    percentual = (aumento / custo_original) * 100
-
-    print("Novo caminho:", " -> ".join(caminho))
-    print(f"Novo custo: {novo_custo} km")
-    print(f"Aumento: {aumento} km")
-    print(f"Aumento percentual: {percentual:.2f}%")
+print(f"Custo mínimo: {distancias[destino]} km")
 
 
-def executar_prim(grafo):
-    arestas, custo_total = prim(grafo, "S0")
+# Soma das distâncias mínimas a partir de S0.
+soma_distancias = sum(distancias.values())
 
-    print("\nÁRVORE GERADORA MÍNIMA (PRIM)")
-
-    for u, v, peso in arestas:
-        print(f"{u} - {v}: {peso} km")
-
-    print(f"Custo total da AGM: {custo_total} km")
+print(f"\nSoma das distâncias mínimas a partir de S0: "
+      f"{soma_distancias} km")
 
 
-def main():
-    grafo = criar_grafo()
+# Contingência: falha do ramal e5 (S2-S4).
+print("\nCONTINGÊNCIA - FALHA DO RAMAL e5")
 
-    exibir_matriz(grafo)
+grafo_contingencia = grafo.copy()
+grafo_contingencia.remove_edge("S2", "S4")
 
-    distancias, caminho = executar_dijkstra(grafo)
+distancias_novas, antecessores_novos, fechados_novos, caminho_novo, historico_novo = dijkstra(
+    grafo_contingencia, origem, destino
+)
 
-    executar_contingencia(grafo, distancias["S6"])
+novo_custo = distancias_novas[destino]
+aumento = novo_custo - distancias[destino]
+percentual = (aumento / distancias[destino]) * 100
 
-    executar_prim(grafo)
+print("Novo caminho:", " -> ".join(caminho_novo))
+print(f"Novo custo: {novo_custo} km")
+print(f"Aumento: {aumento} km")
+print(f"Aumento percentual: {percentual:.2f}%")
 
 
-if __name__ == "__main__":
-    main()
+# Árvore geradora mínima com Prim.
+print("\nÁRVORE GERADORA MÍNIMA - PRIM")
+
+arvore, custo_total = prim(grafo, origem)
+
+for u, v, peso in arvore:
+    print(f"{u} - {v}: {peso} km")
+
+print(f"Custo total da AGM: {custo_total} km")
+
+print("\nCOMPARAÇÃO")
+print(f"Soma das distâncias de Dijkstra: {soma_distancias} km")
+print(f"Custo da árvore geradora mínima: {custo_total} km")
