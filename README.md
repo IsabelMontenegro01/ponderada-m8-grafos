@@ -149,7 +149,7 @@ As duas árvores diferem porque otimizam objetivos distintos. O Dijkstra minimiz
 
 ### Impacto prático
 
-O menor custo de implantação não garante o melhor desempenho. Se o tráfego seguisse apenas pela AGM, S5 seria alcançado por S0 → S1 → S3 → S4 → S5, com 39 km, contra 31 km pela rota de Dijkstra (S0 → S1 → S2 → S5). São 8 km a mais, cerca de 26%. Do ponto de vista econômico, a AGM reduz a quantidade de linha instalada. Do ponto de vista físico, rotas mais longas aumentam as perdas e o tempo de recomposição em uma emergência. Redes reais costumam combinar uma estrutura de custo mínimo com ramais adicionais para reduzir distâncias e dar redundância.
+O menor custo de implantação não garante o melhor desempenho. Se o tráfego seguisse apenas pela AGM, S5 seria alcançado por S0 → S1 → S3 → S4 → S5, com 39 km, contra 31 km pela rota de Dijkstra (S0 → S2 → S5). São 8 km a mais, cerca de 26%. Do ponto de vista econômico, a AGM reduz a quantidade de linha instalada. Do ponto de vista físico, rotas mais longas aumentam as perdas e o tempo de recomposição em uma emergência. Redes reais costumam combinar uma estrutura de custo mínimo com ramais adicionais para reduzir distâncias e dar redundância.
 
 ## 7. Implementação
 
