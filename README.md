@@ -181,7 +181,7 @@ A saída apresenta a matriz de adjacência, as distâncias e os antecessores de 
 
 ### Planejamento
 
-A primeira etapa foi analisar o enunciado. O grafo foi representado com NetworkX, enquanto Dijkstra e Prim foram implementados manualmente em `algoritmos.py`, separados da instanciação da rede em `main.py`. Os pesos foram calculados pelas fórmulas do RA 510197 e conferidos antes de serem inseridos no código.
+O grafo foi representado com NetworkX, enquanto Dijkstra e Prim foram implementados manualmente em `algoritmos.py`, separados da instanciação da rede em `main.py`. Os pesos foram calculados pelas fórmulas do RA 510197 e conferidos antes de serem inseridos no código.
 
 ### Decisões de implementação
 
