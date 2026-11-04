@@ -38,6 +38,23 @@ O destino é S6 porque o último dígito do RA é ímpar.
 | e12 | S6 – S7 | 13 km |
 | e13 | S1 – S4 | 23 km |
 
+```mermaid
+graph TD
+    S0 ---|12| S1
+    S0 ---|17| S2
+    S1 ---|9| S2
+    S1 ---|12| S3
+    S2 ---|15| S4
+    S2 ---|14| S5
+    S3 ---|8| S4
+    S3 ---|15| S6
+    S4 ---|7| S5
+    S4 ---|17| S7
+    S5 ---|24| S7
+    S6 ---|13| S7
+    S1 ---|23| S4
+```
+
 ### 3.2. Matriz de adjacência
 
 A matriz representa os custos dos ramais entre as subestações. Como o grafo é não orientado, ela é simétrica. O valor NULO indica que não existe conexão direta entre dois vértices.
@@ -128,20 +145,6 @@ A MST conecta as oito subestações com sete arestas, utilizando o menor custo t
 
 O custo da MST não deve ser confundido com a soma das menores distâncias calculadas pelo Dijkstra. O Dijkstra considera caminhos mínimos a partir de uma origem específica. Já o Prim busca conectar todos os vértices com o menor custo total, sem exigir que cada caminho individual parta de S0.
 
-graph TD
-    S0 ---|12| S1
-    S0 ---|17| S2
-    S1 ---|9| S2
-    S1 ---|12| S3
-    S2 ---|15| S4
-    S2 ---|14| S5
-    S3 ---|8| S4
-    S3 ---|15| S6
-    S4 ---|7| S5
-    S4 ---|17| S7
-    S5 ---|24| S7
-    S6 ---|13| S7
-    S1 ---|23| S4
 
 ## 7. Implementação
 
