@@ -26,6 +26,9 @@ arestas = [
 ]
 
 for u, v, peso in arestas:
+    if peso < 0:
+        raise ValueError("O peso da aresta não pode ser negativo.")
+
     grafo.add_edge(u, v, peso=peso)
 
 
