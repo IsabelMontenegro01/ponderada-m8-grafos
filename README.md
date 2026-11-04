@@ -124,6 +124,8 @@ A rota mínima permanece:
 
 A falha não altera a rota escolhida porque o caminho mínimo entre S0 e S6 não utiliza o ramal S2–S4.
 
+
+
 ## 6. Árvore Geradora Mínima — Prim
 
 O algoritmo de Prim seleciona arestas de menor peso para conectar todos os vértices, sem formar ciclos.
@@ -141,19 +143,29 @@ A árvore geradora mínima encontrada é composta pelas seguintes arestas:
 | S3 – S6 | 15 km |
 | **Total** | **76 km** |
 
-A MST conecta as oito subestações com sete arestas, utilizando o menor custo total possível.
+A AGM conecta as oito subestações com sete arestas, utilizando o menor custo total possível.
 
-O custo da MST não deve ser confundido com a soma das menores distâncias calculadas pelo Dijkstra. O Dijkstra considera caminhos mínimos a partir de uma origem específica. Já o Prim busca conectar todos os vértices com o menor custo total, sem exigir que cada caminho individual parta de S0.
+O custo da AGM não deve ser confundido com a soma das menores distâncias calculadas pelo Dijkstra. O Dijkstra considera caminhos mínimos a partir de uma origem específica. Já o Prim busca conectar todos os vértices com o menor custo total, sem exigir que cada caminho individual parta de S0.
 
+Neste caso, a soma das distâncias mínimas a partir de S0 é **204 km**, enquanto o custo da AGM é **76 km**. A união dos caminhos mínimos a partir de S0 não garante uma árvore de custo mínimo, pois esses caminhos são escolhidos individualmente para alcançar cada destino, e não para minimizar o custo total da rede.
 
 ## 7. Implementação
 
-O projeto está dividido em três arquivos Python:
+O projeto está dividido em três arquivos:
 
+- `main.py`: instanciação da rede, execução dos algoritmos e exibição dos resultados.
 - `algoritmos.py`: implementação dos algoritmos de Dijkstra e Prim.
-- `main.py`: instanciação da rede e execução dos algoritmos.
+- `README.md`: documentação da atividade e registro do desenvolvimento.
+
+O NetworkX é utilizado para representar o grafo. Os algoritmos de Dijkstra e Prim foram implementados separadamente, seguindo a abordagem didática apresentada no material do professor.
 
 ### Execução
+
+Instale a dependência:
+
+```bash
+pip install networkx
+```
 
 Na raiz do projeto, execute:
 
@@ -161,19 +173,22 @@ Na raiz do projeto, execute:
 python main.py
 ```
 
-A saída deve apresentar a matriz de adjacência, a rota mínima, a ordem de fechamento dos vértices, o resultado de Prim e a análise da contingência.
+A saída apresenta a matriz de adjacência, as distâncias e os antecessores de cada iteração, a ordem de fechamento, a rota mínima, a análise de contingência e o resultado de Prim.
 
 ## 8. Devlog
 
-### Planejamento inicial
+### Planejamento
 
-A primeira etapa foi analisar o enunciado e o material disponibilizado pelo professor. A implementação foi dividida em três arquivos para separar a estrutura do grafo, os algoritmos e a execução.
+A primeira etapa foi analisar o enunciado e o material disponibilizado pelo professor. A implementação foi organizada em dois arquivos Python, separando a criação do grafo da lógica dos algoritmos.
 
 Também foi definido que os resultados computacionais seriam comparados com o teste de mesa de Dijkstra.
 
-### Próximas etapas
+### Implementação e validação
 
-- Executar o programa e conferir a saída.
-- Comparar os resultados do código com o teste de mesa.
-- Registrar dificuldades encontradas durante a implementação e como foram resolvidas.
-- Adicionar evidências da execução no repositório.
+O grafo foi construído com NetworkX, utilizando os oito vértices e as treze arestas definidas pelo RA.
+
+Durante a implementação de Dijkstra, foi necessário considerar a regra de desempate pelo menor índice e manter a atualização dos antecessores apenas quando uma distância menor fosse encontrada.
+
+Após a implementação, o programa foi executado e os resultados foram conferidos com o teste de mesa. Os custos e a ordem de fechamento coincidiram com os resultados esperados.
+
+Também foi adicionada uma validação para impedir a inserção de arestas com pesos negativos.
